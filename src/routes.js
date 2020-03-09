@@ -1,17 +1,16 @@
 import Router from 'express'
 
-import User from './app/models/User'
+import UserController from './app/controllers/UserController'
+import SessionController from './app/controllers/SessionController'
+
+import authMiddleware from './app/middlewares/auth'
 
 const routes = new Router()
 
-routes.get('/', async (req, res) => {
-  const user = await User.create({
-    name: 'Lucas Luan',
-    email: 'lucas@email.com',
-    password_hash: '123456789',
-  })
+routes.post('/sessions', SessionController.store)
+routes.post('/users', UserController.store)
 
-  return res.json(user)
-})
+routes.use(authMiddleware)
+routes.put('/users', authMiddleware, UserController.update)
 
 export default routes
